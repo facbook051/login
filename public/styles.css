@@ -1,0 +1,150 @@
+/* الإعدادات العامة */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e9eff1; /* اللون الرمادي الفاتح */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* حاوية تسجيل الدخول */
+.login-container {
+    width: 100%;
+    max-width: 380px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+/* شعار الفيسبوك */
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    color: #1877f2; /* اللون الأزرق لفيسبوك */
+    font-size: 36px;
+    font-weight: bold;
+}
+
+/* وصف تسجيل الدخول */
+.description {
+    text-align: center;
+    color: #000000; /* اللون الأسود الغامق */
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* نموذج تسجيل الدخول */
+.login-form {
+    padding: 20px;
+    position: relative;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #f0f2f5;
+}
+
+/* زر تسجيل الدخول */
+.login-form button {
+    width: 100%;
+    padding: 15px;
+    background-color: #1877f2; /* اللون الأزرق لفيسبوك */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 20px;  /* تحريك الزر إلى الأسفل */
+}
+
+.login-form button:hover {
+    background-color: #165eaa;
+}
+
+/* الروابط الإضافية */
+.links {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.links a {
+    color: #1877f2;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+/* رابط إنشاء حساب جديد */
+.create-account {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.create-account a {
+    color: white;
+    background-color: #42b72a; /* الخلفية الخضراء */
+    font-size: 14px;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 5px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+
+.create-account a:hover {
+    background-color: #36a420; /* التغيير في الخلفية عند المرور */
+}
+
+/* تعديل النص "Créer une Page" ليصبح أكثر غمقًا وحجمه أكبر */
+.footer p .create-page {
+    color: #000000; /* لون أسود غامق جدًا */
+    font-size: 14px; /* زيادة حجم الخط */
+    font-weight: bold; /* جعل النص عريضًا */
+    text-decoration: none; /* إزالة التسطير */
+}
+
+.footer p .create-page:hover {
+    text-decoration: underline; /* إضافة التسطير عند التمرير */
+}
+
+/* تذييل الصفحة */
+.footer {
+    text-align: center;
+    font-size: 12px;
+    color: #777;
+    margin-top: 30px;
+}
+
+/* تعديل الرسالة لتظهر في المنتصف بين خانة كلمة المرور وزر "تسجيل الدخول" */
+/* تعديل الرسالة لتظهر تحت زر "تسجيل الدخول" */
+.error-message {
+    color: red;
+    font-size: 13px;
+    margin-top: 10px;
+    display: none;
+    text-align: left;
+}
+
