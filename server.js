@@ -1,49 +1,59 @@
 const express = require('express');
-const path = require('path');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
-// ✅ الحالة العامة المؤقتة
+// ✅ الحالة المشتركة (مؤقتة)
 let status = {
     accepted: false,
     rejected: false
 };
 
-// ✅ تقديم ملفات من مجلد public
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
-// ✅ تحديث الحالة من البوت أو من السكريبت
+// ✅ تحديث الحالة من البوت
 app.get('/update-status', (req, res) => {
     const action = req.query.action;
 
     if (action === 'accept') {
-        status = { accepted: true, rejected: false };
-        console.log('✅ تم التفعيل: ACCEPT');
-    } else if (action === 'reject') {
-        status = { accepted: false, rejected: true };
-        console.log('❌ تم التفعيل: REJECT');
-    } else if (action === 'reset') {
-        status = { accepted: false, rejected: false };
-        console.log('🔁 تم إعادة تعيين الحالة: RESET');
-    } else {
-        return res.json({ message: '❓ action غير معروف' });
+        status.accepted = true;
+        status.rejected = false;
+
+        // ⏱️ إعادة تعيين بعد 5 ثواني
+        setTimeout(() => {
+            status.accepted = false;
+            console.log("🔁 تم إعادة تعيين 'accept'");
+        }, 5000);
+
+        return res.json({ message: 'accepted' });
     }
 
-    // 🔄 إعادة تعيين تلقائي بعد 15 ثانية
-    setTimeout(() => {
-        status = { accepted: false, rejected: false };
-        console.log('⏳ الحالة أُعيد تعيينها تلقائيًا');
-    }, 15000);
+    if (action === 'reject') {
+        status.rejected = true;
+        status.accepted = false;
 
-    res.send('✅ الحالة تم تحديثها');
+        // ⏱️ إعادة تعيين بعد 5 ثواني
+        setTimeout(() => {
+            status.rejected = false;
+            console.log("🔁 تم إعادة تعيين 'reject'");
+        }, 5000);
+
+        return res.json({ message: 'rejected' });
+    }
+
+    if (action === 'reset') {
+        status.accepted = false;
+        status.rejected = false;
+        return res.send("♻️ تم إعادة تعيين الحالة يدويًا");
+    }
+
+    return res.json({ message: 'invalid action' });
 });
 
-// ✅ إعطاء الحالة للواجهة
+// ✅ يطلب منه front-end للتحقق من الحالة
 app.get('/get-status', (req, res) => {
     res.json(status);
 });
 
-// ✅ تشغيل السيرفر
 app.listen(port, () => {
-    console.log(`🚀 السيرفر يعمل على http://localhost:${port}`);
+    console.log(`✅ السيرفر يعمل على http://localhost:${port}`);
 });
