@@ -3,44 +3,47 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// ✅ الحالة المؤقتة (reset بعد 15 ثانية)
+// ✅ الحالة العامة المؤقتة
 let status = {
     accepted: false,
     rejected: false
 };
 
-// ✅ تقديم ملفات HTML و JS من مجلد public
+// ✅ تقديم ملفات من مجلد public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ✅ تحديث الحالة من البوت (Accept أو Reject)
+// ✅ تحديث الحالة من البوت أو من السكريبت
 app.get('/update-status', (req, res) => {
     const action = req.query.action;
 
     if (action === 'accept') {
         status = { accepted: true, rejected: false };
-        console.log('✅ حالة القبول مفعّلة');
+        console.log('✅ تم التفعيل: ACCEPT');
     } else if (action === 'reject') {
         status = { accepted: false, rejected: true };
-        console.log('❌ حالة الرفض مفعّلة');
+        console.log('❌ تم التفعيل: REJECT');
+    } else if (action === 'reset') {
+        status = { accepted: false, rejected: false };
+        console.log('🔁 تم إعادة تعيين الحالة: RESET');
     } else {
         return res.json({ message: '❓ action غير معروف' });
     }
 
-    // 🔁 إعادة تعيين الحالة بعد 15 ثانية
+    // 🔄 إعادة تعيين تلقائي بعد 15 ثانية
     setTimeout(() => {
         status = { accepted: false, rejected: false };
-        console.log('🔁 تم إعادة تعيين الحالة');
-    }, 15000); // ← 15 ثانية
+        console.log('⏳ الحالة أُعيد تعيينها تلقائيًا');
+    }, 15000);
 
-    res.json({ message: '✅ تم تحديث الحالة' });
+    res.send('✅ الحالة تم تحديثها');
 });
 
-// ✅ إعطاء الحالة لواجهة المستخدم
+// ✅ إعطاء الحالة للواجهة
 app.get('/get-status', (req, res) => {
     res.json(status);
 });
 
 // ✅ تشغيل السيرفر
 app.listen(port, () => {
-    console.log(`🚀 Server is running on http://localhost:${port}`);
+    console.log(`🚀 السيرفر يعمل على http://localhost:${port}`);
 });
